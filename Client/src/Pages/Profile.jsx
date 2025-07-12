@@ -73,6 +73,7 @@ export default function Profile() {
         method:'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser.token}`,
         },
         body: JSON.stringify(formData),
       }); 
@@ -93,6 +94,10 @@ export default function Profile() {
        dispatch(deleteUserStart());
        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/user/delete/${currentUser._id}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser.token}`,
+        },
        });
         const data = await res.json();
       if (data.success === false) {
@@ -110,7 +115,13 @@ export default function Profile() {
   const handleSignOut = async () => {
     try {
       dispatch(signOutUserStart());
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signout`);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signout`,
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          }
+        }
+      );
       const data = await res.json();
       if (data.success === false) {
         dispatch(signOutUserFailure(data.message));
@@ -126,7 +137,13 @@ export default function Profile() {
   const handleShowListings = async () => {
     try {
       setShowListingError(false);
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/user/listings/${currentUser._id}`);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/user/listings/${currentUser._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`,
+          }
+        }
+      );
       const data = await res.json();
       if (data.success === false) {
         setShowListingError(true);
@@ -145,6 +162,9 @@ export default function Profile() {
   try {
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/listing/delete/${listingId}`, {
       method: 'DELETE',
+      headers: {
+         Authorization: `Bearer ${currentUser.token}`,
+      }
     });
     const data = await res.json();
       if (data.success === false) {
@@ -216,6 +236,7 @@ export default function Profile() {
          onChange={handleChange}
           id="password"
           className="border p-3 rounded-lg"
+          autoComplete="current-password"
           
         />
         <button disabled={loading} 
