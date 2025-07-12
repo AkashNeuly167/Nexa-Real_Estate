@@ -5,6 +5,8 @@ import userRouter from './routes/user.route.js'
 import authRouter from './routes/auth.route.js'
 import listingRouter from './routes/listing.route.js'
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
+
 
 
 
@@ -25,7 +27,7 @@ mongoose
   });
 
 
-
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
@@ -49,6 +51,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000!');
+
+ const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
