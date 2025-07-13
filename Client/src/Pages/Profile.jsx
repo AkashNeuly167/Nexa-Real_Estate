@@ -221,6 +221,7 @@ export default function Profile() {
           defaultValue={currentUser.username}
           className="border p-3 rounded-lg"
           onChange={handleChange}
+          autoComplete="username"
 
         />
         <input
@@ -230,6 +231,7 @@ export default function Profile() {
           id="email"
           className="border p-3 rounded-lg"
           onChange={handleChange}
+          autoComplete="email"
 
         />
         <input
