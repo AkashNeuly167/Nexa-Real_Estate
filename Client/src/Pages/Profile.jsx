@@ -10,7 +10,7 @@ import {
 import { app } from "../firebase";
 import { updateUserStart,updateUserSuccess,updateUserFailure, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutUserStart, signOutUserFailure, signOutUserSuccess } from "../Redux/user/userSlice";
 import { useDispatch } from "react-redux";
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -20,6 +20,7 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const loading = useSelector((state) => state.user.isLoading);
   const error = useSelector((state) => state.user.error);
   const [updateSuccess,setUpdateSuccess] = useState(false);
@@ -105,6 +106,7 @@ export default function Profile() {
         return;
       }
       dispatch(deleteUserSuccess(data));
+      navigate('/sign-in');
     } catch (error) {
       console.error("Error deleting user:", error);
       dispatch(deleteUserFailure(error.message));
@@ -117,17 +119,17 @@ export default function Profile() {
       dispatch(signOutUserStart());
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signout`,
         {
-          headers: {
-            Authorization: `Bearer ${currentUser.token}`,
-          }
-        }
-      );
+          method: 'GET',
+          credentials: 'include'
+          
+        });
       const data = await res.json();
       if (data.success === false) {
         dispatch(signOutUserFailure(data.message));
         return;
       }
       dispatch(signOutUserSuccess());
+      navigate('/sign-in');
     } catch (error) {
       dispatch(signOutUserFailure(error.message));
      

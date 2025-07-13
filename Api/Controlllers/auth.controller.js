@@ -5,14 +5,15 @@ import jwt from "jsonwebtoken";
 
 
 export const signup =  async (req, res, next) => {
-
-
   const { username, email, password } = req.body;
    const hashedPassword = bcrypt.hashSync(password,10);
   const newUser = new User({ username, email, password: hashedPassword });
    try{
       await newUser.save()
-      res.status(201).json("User created successfully");
+      res.status(201).json({
+      success: true, 
+      message: "User created successfully",
+    });
    } catch (error) {
       next(error);
    }
@@ -30,9 +31,13 @@ export const signin = async (req, res, next) => {
         const {password:pass,...rest } = validUser._doc;
 
         res.cookie("access_token", token, {
-          httpOnly: true, // 30 days
+          httpOnly: true,
+          sameSite : "none",
+          secure : true,
         }).status(200).
-        json({...rest,token});
+        json({ success: true,
+              ...rest,
+              token });
    }catch(error){
       next(error);
 
@@ -43,11 +48,17 @@ export const google = async (req,res,next)=>{
    try {
       const user = await User.findOne({ email: req.body.email });
       if(user){
+
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
          const {password:pass,...rest } = user._doc;
-         res.cookie("access_token", token, {
-            httpOnly: true, 
-          }).status(200).json(...rest,token);
+
+         return res.cookie("access_token", token, {
+            httpOnly: true,
+            sameSite : "none",
+            secure : true, 
+          }).status(200).json({success: true,
+                               ...rest,
+                                token });
       }
       else{
           const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
@@ -64,7 +75,7 @@ export const google = async (req,res,next)=>{
             const {password:pass,...rest } = newUser._doc;
             res.cookie("access_token", token, {
                httpOnly: true, 
-             }).status(200).json(rest);
+             }).status(200).json({success: true,...rest, token});
 
       }
    } catch (error) {
@@ -75,7 +86,10 @@ export const google = async (req,res,next)=>{
 export const signOut = (req, res) => {
    try {
       res.clearCookie("access_token");
-      res.status(200).json("User signed out successfully");
+      res.status(200).json({
+         success: true,
+         message: "User signed out successfully",
+      });
    } catch (error) {
       next(error);
    }
