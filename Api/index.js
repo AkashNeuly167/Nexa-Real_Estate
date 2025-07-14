@@ -22,7 +22,7 @@ mongoose
 
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://realestate-frontend-0hsg.onrender.com'],
+  origin: ['http://localhost:5173', 'https://nexa-real-estate.vercel.app'],
   credentials: true
 }));
 app.use(express.json());
