@@ -54,6 +54,10 @@ app.use((err, req, res, next) => {
   });
 });
 
+app.get("/ping", (req, res) => {
+  res.status(200).send("pong");
+});
+
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
