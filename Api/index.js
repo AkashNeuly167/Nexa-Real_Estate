@@ -21,10 +21,29 @@ mongoose
   });
 
 
+const allowedOrigins = ['http://localhost:5173', 'https://nexa-real-estate.vercel.app'];
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://nexa-real-estate.vercel.app'],
+  origin:function(origin, callback){
+    if(!origin || allowedOrigins.includes(origin)){
+      callback(null,true);
+    } else{
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
+
+app.options('*', cors());
+
+
+/* app.use(cors({
+  origin: ['http://localhost:5173', 'https://nexa-real-estate.vercel.app'],
+  credentials: true
+})); */
+
+
+
 app.use(express.json());
 app.use(cookieParser());
 
