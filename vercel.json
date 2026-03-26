@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "Api/index.js", "use": "@vercel/node" },
+    { "src": "Client/package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "Api/index.js" },
+    { "src": "/(.*)", "dest": "Client/dist/$1" }
+  ]
+}
