@@ -11,15 +11,17 @@ import listingRouter from './routes/listing.route.js'
 dotenv.config();
 const app = express();
 
-// Cache DB connection (important for serverless!)
-let isConnected = false;
-const connectDB = async () => {
-  if (isConnected) return;
-  await mongoose.connect(process.env.MONGO);
-  isConnected = true;
-  console.log('Connected to MongoDB!');
-};
-connectDB().catch(console.error);
+mongoose
+  .connect(process.env.MONGO)
+  .then(() => {
+    console.log('Connected to MongoDB!');
+  })
+  .catch((err) => {
+    console.error('Error connecting to MongoDB:', err);
+  });
+
+
+
 
 
 app.use(cors({
@@ -56,4 +58,7 @@ app.get("/ping", (req, res) => {
   res.status(200).send("pong");
 });
 
-export default app;
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
